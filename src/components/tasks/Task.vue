@@ -10,8 +10,10 @@
                 <div class="relative" v-if="isEdit">
                     <input class="editable-task"
                      type="text"
-                      @keyup.esc="isEdit=false" v-focus
+                     v-focus
+                      @keyup.esc="undo" 
                       @keyup.enter="updateTask"
+                      v-model="editingTask"
                       />
                 </div>
                 <span v-else>{{ task.id + " - " + task.name }}</span>
@@ -30,6 +32,7 @@ const props = defineProps({
 })
 const emit=defineEmits(['updated'])
 const isEdit = ref(false)
+const editingTask = ref(props.task.name)
 const completedClass = computed(() => props.task.is_completed ? "completed" : "")
 const vFocus={
     mounted:(el)=>el.focus()
@@ -38,5 +41,9 @@ const updateTask = event=>{
     const updatedTask={ ...props.task,name:event.target.value}
     isEdit.value=false
     emit('updated',updatedTask)
+}
+const undo =()=>{
+    isEdit.value=false
+    editingTask.value=props.task.name
 }
 </script>
